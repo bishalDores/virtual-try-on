@@ -8,16 +8,18 @@
 // 8. Draw functions DONE
 
 import React, { useRef } from "react";
-import "./App.css";
 import * as tf from "@tensorflow/tfjs";
 import * as posenet from "@tensorflow-models/posenet";
 import Webcam from "react-webcam";
-import { drawKeypoints, drawSkeleton } from "./utilities";
 import Shirt from "./images/yellow.png";
+import useWindowSize from "./helpers/useWindowSize";
+import { drawSkeleton, drawKeypoints } from "./utilities";
+import { movingAverageFilter } from "./helpers/movingAverageFilter";
 
 function App() {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
+  const size = useWindowSize();
   let leftShoulderPos;
   let rightShoulderPos;
   let leftHipsPos;
@@ -32,7 +34,7 @@ function App() {
     //
     setInterval(() => {
       detect(net);
-    }, 100);
+    }, 2000);
   };
 
   const detect = async (net) => {
@@ -51,7 +53,9 @@ function App() {
       webcamRef.current.video.height = videoHeight;
 
       // Make Detections
-      const pose = await net.estimateSinglePose(video);
+      const pose = await net.estimateSinglePose(video, {
+        flipHorizontal: false,
+      });
 
       drawCanvas(pose, video, videoWidth, videoHeight, canvasRef);
     }
@@ -61,6 +65,8 @@ function App() {
     const ctx = canvas.current.getContext("2d");
     canvas.current.width = videoWidth;
     canvas.current.height = videoHeight;
+    const filteredKeypoints = movingAverageFilter(pose.keypoints, 5);
+    // console.log("filteredKeypoints", filteredKeypoints);
     pose.keypoints.map((p) => {
       if (p.part === "leftShoulder") {
         leftShoulderPos = p.position;
@@ -73,18 +79,21 @@ function App() {
       }
     });
 
-    const shirtWidth = rightShoulderPos.x - leftShoulderPos.x;
-    const shirtHeight = Math.abs(rightHipPos.y - leftShoulderPos.y);
+    const shirtWidth = (rightShoulderPos.x - leftShoulderPos.x) * 1.1;
+    const shirtHeight = Math.abs(rightHipPos.y - leftShoulderPos.y) * 1.1;
 
     const shirtX = leftShoulderPos.x;
     const shirtY = leftShoulderPos.y;
 
     const shirtImg = new Image();
     shirtImg.src = Shirt;
+
+    ctx.translate(0, -30);
     ctx.drawImage(shirtImg, shirtX, shirtY, shirtWidth, shirtHeight);
 
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
     drawKeypoints(pose["keypoints"], 0.6, ctx);
-    drawSkeleton(pose["keypoints"], 0.7, ctx);
+    // drawSkeleton(pose["keypoints"], 0.7, ctx);
   };
 
   runPosenet();
@@ -102,8 +111,8 @@ function App() {
             right: 0,
             textAlign: "center",
             zindex: 9,
-            width: 1280,
-            height: 720,
+            width: size.width,
+            height: size.height,
           }}
         />
 
@@ -117,8 +126,8 @@ function App() {
             right: 0,
             textAlign: "center",
             zindex: 9,
-            width: 1280,
-            height: 720,
+            width: size.width,
+            height: size.height,
           }}
         />
       </header>
