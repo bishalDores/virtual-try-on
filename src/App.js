@@ -119,7 +119,7 @@ function App() {
           height: size.height,
         }}
         audio={false}
-        videoConstraints={{ facingMode: "user" }}
+        videoConstraints={{ facingMode: { exact: "environment" } }}
         // onUserMedia={(val) => console.log(val)}
         onUserMediaError={(val) => alert(val)}
       />
