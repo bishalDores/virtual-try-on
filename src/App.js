@@ -116,6 +116,8 @@ function App() {
         }}
         audio={false}
         videoConstraints={{ facingMode: "user" }}
+        // onUserMedia={(val) => console.log(val)}
+        onUserMediaError={(val) => alert(val)}
       />
 
       <canvas
