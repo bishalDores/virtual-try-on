@@ -27,7 +27,11 @@ function App() {
 
   //  Load posenet
   const runPosenet = async () => {
-    const net = await posenet.load();
+    const net = await posenet.load({
+      inputResolution: { width: 640, height: 480 },
+      scale: 0.8,
+    });
+    alert(net);
     //
     setInterval(() => {
       detect(net);
@@ -97,7 +101,7 @@ function App() {
     // drawSkeleton(pose["keypoints"], 0.7, ctx);
   };
 
-  // runPosenet();
+  runPosenet();
 
   return (
     <div className="App">
