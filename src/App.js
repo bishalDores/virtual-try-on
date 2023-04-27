@@ -27,10 +27,7 @@ function App() {
 
   //  Load posenet
   const runPosenet = async () => {
-    const net = await posenet.load({
-      inputResolution: { width: 640, height: 480 },
-      scale: 0.8,
-    });
+    const net = await posenet.load();
     //
     setInterval(() => {
       detect(net);
@@ -43,6 +40,10 @@ function App() {
       webcamRef.current !== null &&
       webcamRef.current.video.readyState === 4
     ) {
+      console.log(
+        webcamRef.current.video.videoWidth,
+        webcamRef.current.video.videoHeight
+      );
       // Get Video Properties
       const video = webcamRef.current.video;
       const videoWidth = webcamRef.current.video.videoWidth;
@@ -100,37 +101,35 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <Webcam
-          ref={webcamRef}
-          style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 0,
-            textAlign: "center",
-            zindex: 9,
-            width: size.width,
-            height: size.height,
-          }}
-        />
+      <Webcam
+        ref={webcamRef}
+        style={{
+          position: "absolute",
+          marginLeft: "auto",
+          marginRight: "auto",
+          left: 0,
+          right: 0,
+          textAlign: "center",
+          zindex: 9,
+          width: size.width,
+          height: size.height,
+        }}
+      />
 
-        <canvas
-          ref={canvasRef}
-          style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 0,
-            textAlign: "center",
-            zindex: 9,
-            width: size.width,
-            height: size.height,
-          }}
-        />
-      </header>
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: "absolute",
+          marginLeft: "auto",
+          marginRight: "auto",
+          left: 0,
+          right: 0,
+          textAlign: "center",
+          zindex: 9,
+          width: size.width,
+          height: size.height,
+        }}
+      />
     </div>
   );
 }
