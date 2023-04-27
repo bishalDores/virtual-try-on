@@ -97,7 +97,7 @@ function App() {
     // drawSkeleton(pose["keypoints"], 0.7, ctx);
   };
 
-  runPosenet();
+  // runPosenet();
 
   return (
     <div className="App">
