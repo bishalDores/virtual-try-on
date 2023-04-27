@@ -114,6 +114,8 @@ function App() {
           width: size.width,
           height: size.height,
         }}
+        audio={false}
+        videoConstraints={{ facingMode: "user" }}
       />
 
       <canvas
