@@ -11,7 +11,7 @@ import React, { useRef } from "react";
 import * as tf from "@tensorflow/tfjs";
 import * as posenet from "@tensorflow-models/posenet";
 import Webcam from "react-webcam";
-import Shirt from "./images/yellow.png";
+import Shirt from "./images/red-shirt.png";
 import useWindowSize from "./helpers/useWindowSize";
 import { drawSkeleton, drawKeypoints } from "./utilities";
 import { movingAverageFilter } from "./helpers/movingAverageFilter";
@@ -73,6 +73,7 @@ function App() {
     canvas.current.width = videoWidth;
     canvas.current.height = videoHeight;
     const filteredKeypoints = movingAverageFilter(pose.keypoints, 5);
+    console.log(pose);
     // console.log("filteredKeypoints", filteredKeypoints);
     pose.keypoints.map((p) => {
       if (p.part === "leftShoulder") {
@@ -86,20 +87,26 @@ function App() {
       }
     });
 
+    const shirtImg = new Image();
+    shirtImg.src = Shirt;
+
+    const dx = leftShoulderPos.x - rightShoulderPos.x;
+    const dy = leftShoulderPos.y - rightShoulderPos.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    const scaleFactor = distance / 200;
+
     const shirtWidth = (rightShoulderPos.x - leftShoulderPos.x) * 1.1;
     const shirtHeight = Math.abs(rightHipPos.y - leftShoulderPos.y) * 1.1;
 
     const shirtX = leftShoulderPos.x;
     const shirtY = leftShoulderPos.y;
 
-    const shirtImg = new Image();
-    shirtImg.src = Shirt;
-
-    ctx.translate(0, -30);
+    ctx.translate(0, -10);
     ctx.drawImage(shirtImg, shirtX, shirtY, shirtWidth, shirtHeight);
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    // drawKeypoints(pose["keypoints"], 0.6, ctx);
+    drawKeypoints(pose["keypoints"], 0.6, ctx);
     // drawSkeleton(pose["keypoints"], 0.7, ctx);
   };
 
@@ -121,9 +128,12 @@ function App() {
           height: size.height,
         }}
         audio={false}
-        videoConstraints={{ facingMode: { exact: "environment" } }}
+        videoConstraints={{ facingMode: "user" }}
         // onUserMedia={(val) => console.log(val)}
         onUserMediaError={(val) => console.log(val)}
+        width={size.width}
+        height={size.height}
+        // mirrored={true}
       />
 
       <canvas
@@ -139,6 +149,8 @@ function App() {
           width: size.width,
           height: size.height,
         }}
+        width={size.width}
+        height={size.height}
       />
     </div>
   );

@@ -131,7 +131,10 @@ export function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
     }
 
     const { y, x } = keypoint.position;
+    ctx.font = "8px Arial";
+
     drawPoint(ctx, y * scale, x * scale, 3, color);
+    ctx.fillText(keypoint.part, x * scale, y * scale);
   }
 }
 
