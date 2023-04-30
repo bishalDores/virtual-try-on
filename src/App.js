@@ -28,10 +28,12 @@ function App() {
   //  Load posenet
   const runPosenet = async () => {
     const net = await posenet.load({
+      architecture: "MobileNetV1",
+      outputStride: 16,
       inputResolution: { width: 640, height: 480 },
-      scale: 0.8,
+      multiplier: 0.75,
     });
-    alert(net);
+    console.log(net);
     //
     setInterval(() => {
       detect(net);
@@ -97,7 +99,7 @@ function App() {
     ctx.drawImage(shirtImg, shirtX, shirtY, shirtWidth, shirtHeight);
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    drawKeypoints(pose["keypoints"], 0.6, ctx);
+    // drawKeypoints(pose["keypoints"], 0.6, ctx);
     // drawSkeleton(pose["keypoints"], 0.7, ctx);
   };
 
@@ -121,7 +123,7 @@ function App() {
         audio={false}
         videoConstraints={{ facingMode: { exact: "environment" } }}
         // onUserMedia={(val) => console.log(val)}
-        onUserMediaError={(val) => alert(val)}
+        onUserMediaError={(val) => console.log(val)}
       />
 
       <canvas
