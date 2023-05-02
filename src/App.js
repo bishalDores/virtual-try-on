@@ -102,7 +102,7 @@ function App() {
     const shirtX = leftShoulderPos.x;
     const shirtY = leftShoulderPos.y;
 
-    ctx.translate(0, -10);
+    ctx.translate(0, -30);
     ctx.drawImage(shirtImg, shirtX, shirtY, shirtWidth, shirtHeight);
 
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -128,7 +128,7 @@ function App() {
           height: size.height,
         }}
         audio={false}
-        videoConstraints={{ facingMode: { exact: "environment" } }}
+        videoConstraints={{ facingMode: "user" }}
         // onUserMedia={(val) => console.log(val)}
         onUserMediaError={(val) => console.log(val)}
         width={size.width}
