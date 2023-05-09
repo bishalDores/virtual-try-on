@@ -123,10 +123,6 @@ export function drawSkeleton(keypoints, minConfidence, ctx, scale = 1) {
  * Draw pose keypoints onto a canvas
  */
 export function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
-  console.log("keypoints", keypoints);
-  console.log("minConfidence", minConfidence);
-  console.log("ctx", ctx);
-
   for (let i = 0; i < keypoints.length; i++) {
     const keypoint = keypoints[i];
 
@@ -149,7 +145,7 @@ export function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
  */
 export function drawBoundingBox(keypoints, ctx) {
   const boundingBox = posenet.getBoundingBox(keypoints);
-  console.log("boundingBox", boundingBox);
+
   ctx.rect(
     boundingBox.minX,
     boundingBox.minY,
