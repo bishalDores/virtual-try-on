@@ -73,7 +73,7 @@ function App() {
                 pose.keypoints[12].position.y - pose.keypoints[5].position.y
               ) * 1.1;
 
-            ctx.translate(-32, 0);
+            ctx.translate(-44, 0);
             ctx.drawImage(
               shirtImg,
               shirtX,
