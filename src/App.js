@@ -3,7 +3,7 @@ import { fromBlob, blobToURL } from "image-resize-compress";
 import * as tf from "@tensorflow/tfjs";
 import * as posenet from "@tensorflow-models/posenet";
 import Human from "./images/forkan.jpeg";
-import Shirt from "./images/tee1.png";
+import Shirt from "./images/tee2.png";
 import { drawKeypoints } from "./utilities";
 import LoadingOverlay from "react-loading-overlay";
 import BounceLoader from "react-spinners/BounceLoader";
@@ -11,6 +11,8 @@ import BounceLoader from "react-spinners/BounceLoader";
 function App() {
   const [humanPose, setHumanPose] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [range, setRange] = useState(44);
+  const [customWidth, setCustomWidth] = useState(1.9);
   const canvasRef = useRef(null);
   const HumanPoseRef = useRef(null);
   const ClothRef = useRef(null);
@@ -54,7 +56,7 @@ function App() {
             canvasRef.current.height
           );
 
-          drawKeypoints(pose["keypoints"], 0.6, ctx, 0.99);
+          // drawKeypoints(pose["keypoints"], 0.6, ctx, 0.99);
           const shirtImg = new Image();
           shirtImg.src = Shirt;
           shirtImg.onload = () => {
@@ -73,12 +75,12 @@ function App() {
                 pose.keypoints[12].position.y - pose.keypoints[5].position.y
               ) * 1.1;
 
-            ctx.translate(-44, 0);
+            ctx.translate(-range, 0);
             ctx.drawImage(
               shirtImg,
               shirtX,
               shirtY,
-              shirtWidth * 1.9,
+              shirtWidth * customWidth,
               shirtHeight * 1.3
             );
             setLoading(false);
@@ -87,7 +89,9 @@ function App() {
       }
     };
     loadModel();
-  }, [humanPose]);
+  }, [humanPose, range, customWidth]);
+
+  console.log(customWidth);
   return (
     <div className="App">
       <LoadingOverlay
@@ -114,6 +118,43 @@ function App() {
           </button>
         </div>
       </LoadingOverlay>
+      <div
+        style={{
+          maxWidth: "250px",
+          minWidth: "250px",
+          marginLeft: "10px",
+          marginTop: "20px",
+        }}
+      >
+        <fieldset class="form-group">
+          <label for="customRange3" class="form-label">
+            Adjust shirt position
+          </label>
+          <input
+            type="range"
+            className="form-range"
+            min="0"
+            max="100"
+            step="1"
+            id="customRange3"
+            onChange={(e) => setRange(e.target.value)}
+            value={range}
+          />
+          <label for="customRange3" class="form-label">
+            Adjust shirt width
+          </label>
+          <input
+            type="range"
+            className="form-range"
+            min="1"
+            max="3"
+            step=".2"
+            id="customRange4"
+            onChange={(e) => setCustomWidth(e.target.value)}
+            value={customWidth}
+          />
+        </fieldset>
+      </div>
     </div>
   );
 }
